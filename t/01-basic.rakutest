@@ -1,0 +1,216 @@
+use v6.d;
+use Test;
+use Inline::BASIC;
+
+plan 15;
+
+# Test 1: Simple PRINT
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 PRINT "HELLO, WORLD!"
+        20 END
+        END
+    };
+    is $output.trim, "HELLO, WORLD!", "Simple PRINT works";
+}
+
+# Test 2: Variables and math
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 LET A = 5
+        20 LET B = 3
+        30 PRINT A + B
+        40 END
+        END
+    };
+    is $output.trim, "8", "Variables and addition work";
+}
+
+# Test 3: String variables
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 LET NAME$ = "RAKU"
+        20 PRINT "HELLO, "; NAME$; "!"
+        30 END
+        END
+    };
+    is $output.trim, "HELLO, RAKU!", "String variables work";
+}
+
+# Test 4: FOR/NEXT loop
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 FOR I = 1 TO 3
+        20   PRINT I
+        30 NEXT I
+        40 END
+        END
+    };
+    is $output.trim, "1\n2\n3", "FOR/NEXT loop works";
+}
+
+# Test 5: IF/THEN
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 LET X = 10
+        20 IF X > 5 THEN PRINT "BIG"
+        30 IF X < 5 THEN PRINT "SMALL"
+        40 END
+        END
+    };
+    is $output.trim, "BIG", "IF/THEN conditional works";
+}
+
+# Test 6: GOTO
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 PRINT "START"
+        20 GOTO 40
+        30 PRINT "SKIPPED"
+        40 PRINT "END"
+        50 END
+        END
+    };
+    is $output.trim, "START\nEND", "GOTO works";
+}
+
+# Test 7: GOSUB/RETURN
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 PRINT "MAIN START"
+        20 GOSUB 50
+        30 PRINT "MAIN END"
+        40 END
+        50 PRINT "SUB"
+        60 RETURN
+        END
+    };
+    is $output.trim, "MAIN START\nSUB\nMAIN END", "GOSUB/RETURN works";
+}
+
+# Test 8: DATA/READ
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 DATA 10, 20, 30
+        20 READ A
+        30 READ B
+        40 PRINT A + B
+        50 END
+        END
+    };
+    is $output.trim, "30", "DATA/READ works";
+}
+
+# Test 9: Multiple expressions
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 LET A = 2 * 3 + 4
+        20 PRINT A
+        30 END
+        END
+    };
+    is $output.trim, "10", "Multiple math operations work";
+}
+
+# Test 10: String concatenation
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 LET A$ = "HELLO"
+        20 LET B$ = "WORLD"
+        30 LET C$ = A$ + " " + B$
+        40 PRINT C$
+        50 END
+        END
+    };
+    is $output.trim, "HELLO WORLD", "String concatenation works";
+}
+
+# Test 11: Nested FOR loops
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 FOR I = 1 TO 2
+        20   FOR J = 1 TO 2
+        30     PRINT I; ","; J
+        40   NEXT J
+        50 NEXT I
+        60 END
+        END
+    };
+    is $output.trim, "1,1\n1,2\n2,1\n2,2", "Nested FOR loops work";
+}
+
+# Test 12: IF/THEN with GOTO
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 LET X = 1
+        20 IF X = 1 THEN 50
+        30 PRINT "NO"
+        40 GOTO 60
+        50 PRINT "YES"
+        60 END
+        END
+    };
+    is $output.trim, "YES", "IF/THEN with line number works";
+}
+
+# Test 13: Assignment without LET
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 A = 42
+        20 PRINT A
+        30 END
+        END
+    };
+    is $output.trim, "42", "Assignment without LET works";
+}
+
+# Test 14: FOR with STEP
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 FOR I = 0 TO 10 STEP 5
+        20   PRINT I
+        30 NEXT I
+        40 END
+        END
+    };
+    is $output.trim, "0\n5\n10", "FOR with STEP works";
+}
+
+# Test 15: Comments with REM
+{
+    my $output = capture-output {
+        basic q:to/END/;
+        10 REM This is a comment
+        20 PRINT "OK"
+        30 REM Another comment
+        40 END
+        END
+    };
+    is $output.trim, "OK", "REM comments are ignored";
+}
+
+# Helper to capture output
+sub capture-output(&code) {
+    my $output = "";
+    my $*OUT = class {
+        method print(*@args) { $output ~= @args.join('') }
+        method say(*@args) { $output ~= @args.join('') ~ "\n" }
+        method flush() { }
+    }.new;
+    &code();
+    return $output;
+}

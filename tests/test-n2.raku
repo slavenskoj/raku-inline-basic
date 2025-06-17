@@ -1,0 +1,19 @@
+#!/usr/bin/env raku
+
+use lib 'lib';
+use Inline::BASIC;
+
+# Test N=2 case
+basic q:to/END/;
+10 LET N = 2
+20 PRINT "TESTING N="; N
+30 LET ISPRIME = 1
+40 PRINT "BEFORE LOOP: ISPRIME="; ISPRIME
+50 FOR D = 2 TO N - 1
+60   PRINT "  IN LOOP: D="; D
+70   LET ISPRIME = 0
+80 NEXT D
+90 PRINT "AFTER LOOP: ISPRIME="; ISPRIME
+100 IF ISPRIME = 1 THEN PRINT N; " IS PRIME"
+110 END
+END
