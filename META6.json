@@ -2,7 +2,7 @@
     "perl": "6.*",
     "name": "Inline::BASIC",
     "auth": "zef:slavenskoj",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Classic Line-Numbered BASIC interpreter for Raku",
     "authors": ["Danslav Slavenskoj"],
     "license": "Artistic-2.0",
@@ -17,6 +17,6 @@
         "files": ["t/01-basic.rakutest", "t/02-examples.rakutest"]
     },
     "tags": ["BASIC", "interpreter", "retro", "programming", "education"],
-    "source-url": "https://github.com/slavenskoj/raku-basic.git",
+    "source-url": "https://github.com/slavenskoj/raku-inline-basic.git",
     "api": "1"
 }
